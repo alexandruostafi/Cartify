@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopApp – Home</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="brand">🛍️ ShopApp</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Products</a>
+      <a href="cart.html">Cart <span class="cart-badge" id="cartCount">0</span></a>
+      <span id="authLinks">
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+      </span>
+      <span id="userLinks" style="display:none">
+        <a href="orders.html">My Orders</a>
+        <a href="#" id="adminLink" style="display:none">Admin</a>
+        <a href="#" id="logoutBtn">Logout</a>
+      </span>
+    </div>
+  </nav>
+
+  <!-- Hero Banner -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Welcome to ShopApp</h1>
+      <p>Discover amazing products at great prices.</p>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <main class="container">
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Search products…" />
+      <select id="categoryFilter">
+        <option value="">All Categories</option>
+      </select>
+      <button id="searchBtn" class="btn btn-primary">Search</button>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" id="productsGrid">
+      <p class="loading">Loading products…</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 ShopApp. All rights reserved.</p>
+  </footer>
+
+  <script src="js/auth-common.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>

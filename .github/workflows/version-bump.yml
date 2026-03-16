@@ -1,0 +1,171 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Version Bump — BasicShopApp
+#
+# Triggers ONLY when a Pull Request is merged into main.
+#
+# Steps:
+#   1. Determine the next semantic version by inspecting all commit messages
+#      since the last tag using Conventional Commits rules:
+#        feat  → minor bump  (1.x.0)
+#        fix / perf / refactor / … → patch bump  (1.0.x)
+#        BREAKING CHANGE footer or ! in type → major bump  (x.0.0)
+#   2. Update version in package.json.
+#   3. Generate / update CHANGELOG.md.
+#   4. Commit, tag, and push back to main.
+#   5. Create a GitHub Release with the generated notes.
+# ──────────────────────────────────────────────────────────────────────────────
+name: version-bump
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  version-bump:
+    name: version-bump
+    # Only run when the PR was actually merged (not just closed)
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # push commits + tags
+      pull-requests: read
+
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.BOT_ACCESS_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure git bot identity
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # ── Determine bump level from commits since last tag ────────────────
+      - name: Determine version bump
+        id: bump
+        shell: bash
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            RANGE="HEAD"
+          else
+            RANGE="${LAST_TAG}..HEAD"
+          fi
+
+          echo "Analysing commits in range: $RANGE"
+          COMMITS=$(git log "$RANGE" --pretty=format:"%s")
+
+          BUMP="patch"   # default
+
+          while IFS= read -r msg; do
+            # Breaking change: footer BREAKING CHANGE or ! after type
+            if echo "$msg" | grep -qE '^[a-z]+(\([^)]*\))?!:' || \
+               git log "$RANGE" --pretty=format:"%b" | grep -q "^BREAKING CHANGE"; then
+              BUMP="major"
+              break
+            fi
+            # feat → at least minor
+            if echo "$msg" | grep -qE '^feat(\([^)]*\))?:' && [ "$BUMP" != "major" ]; then
+              BUMP="minor"
+            fi
+          done <<< "$COMMITS"
+
+          echo "bump=$BUMP" >> "$GITHUB_OUTPUT"
+          echo "Bump level: $BUMP"
+
+      # ── Calculate next version ──────────────────────────────────────────
+      - name: Calculate next version
+        id: version
+        shell: bash
+        run: |
+          CURRENT=$(node -p "require('./package.json').version")
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          BUMP="${{ steps.bump.outputs.bump }}"
+
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+          esac
+
+          NEXT="${MAJOR}.${MINOR}.${PATCH}"
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "next=$NEXT"       >> "$GITHUB_OUTPUT"
+          echo "tag=v${NEXT}"     >> "$GITHUB_OUTPUT"
+          echo "Current: $CURRENT  →  Next: $NEXT  (bump: $BUMP)"
+
+      # ── Generate CHANGELOG entry ────────────────────────────────────────
+      - name: Generate CHANGELOG
+        shell: bash
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then RANGE="HEAD"; else RANGE="${LAST_TAG}..HEAD"; fi
+
+          VERSION="${{ steps.version.outputs.next }}"
+          DATE=$(date +%Y-%m-%d)
+          ENTRY="## [$VERSION] - $DATE\n"
+
+          declare -A SECTIONS
+          SECTIONS[feat]="### ✨ Features"
+          SECTIONS[fix]="### 🐛 Bug Fixes"
+          SECTIONS[perf]="### ⚡ Performance"
+          SECTIONS[refactor]="### ♻️ Refactors"
+          SECTIONS[docs]="### 📚 Documentation"
+          SECTIONS[test]="### 🧪 Tests"
+          SECTIONS[build]="### 🏗️ Build"
+          SECTIONS[ci]="### 🤖 CI"
+          SECTIONS[chore]="### 🔧 Chores"
+          SECTIONS[style]="### 💄 Style"
+          SECTIONS[revert]="### ⏪ Reverts"
+
+          for TYPE in feat fix perf refactor docs test build ci chore style revert; do
+            LINES=$(git log "$RANGE" --pretty=format:"- %s" | grep -E "^- ${TYPE}(\([^)]*\))?!?:" || true)
+            if [ -n "$LINES" ]; then
+              ENTRY="${ENTRY}\n${SECTIONS[$TYPE]}\n${LINES}\n"
+            fi
+          done
+
+          # Prepend to CHANGELOG.md
+          if [ -f CHANGELOG.md ]; then
+            EXISTING=$(cat CHANGELOG.md)
+          else
+            EXISTING="# Changelog\n\nAll notable changes to this project will be documented here.\n"
+          fi
+
+          printf "%b\n\n%b" "# Changelog\n\nAll notable changes to this project will be documented here.\n\n${ENTRY}" \
+            "$(echo "$EXISTING" | tail -n +3)" > CHANGELOG.md
+
+      # ── Bump version in package.json ────────────────────────────────────
+      - name: Bump package.json version
+        run: |
+          npm version ${{ steps.version.outputs.next }} --no-git-tag-version
+
+      # ── Commit, tag & push ───────────────────────────────────────────────
+      - name: Commit version bump
+        run: |
+          git add package.json package-lock.json CHANGELOG.md
+          git commit -m "release: bump version to ${{ steps.version.outputs.next }} [skip ci]"
+          git tag "${{ steps.version.outputs.tag }}"
+          git push origin main --follow-tags
+
+      # ── Create GitHub Release ────────────────────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: "Release ${{ steps.version.outputs.tag }}"
+          generate_release_notes: true
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,185 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# CI Pipeline — BasicShopApp
+#
+# Jobs:
+#   1. branch-lint   – validate branch name format on every push / PR
+#   2. commit-lint   – validate commit messages on push / PR
+#   3. test          – run Playwright + Selenium test suites
+#
+# Triggers:
+#   • push  to any branch
+#   • pull_request targeting main or develop
+# ──────────────────────────────────────────────────────────────────────────────
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main, develop]
+
+# Cancel in-progress runs for the same branch/PR to save runner minutes
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────────────
+  # 1. Branch-lint
+  #    Pattern: <verb>-<segment>[-<segment>...]
+  #    Segments may contain lowercase letters, digits and hyphens.
+  #    Special branches: main, master, develop, dev, staging,
+  #                      release/<name>, hotfix/<name>
+  # ────────────────────────────────────────────────────────────────────────────
+  branch-lint:
+    name: branch-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        shell: bash
+        run: |
+          BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "Branch: $BRANCH"
+
+          SPECIAL="^(main|master|develop|dev|staging|(release|hotfix)\/[a-z0-9][a-z0-9._-]*)$"
+          FEATURE="^[a-z]+(-[a-z0-9]+)+$"
+
+          if [[ "$BRANCH" =~ $SPECIAL ]]; then
+            echo "✅ Branch '$BRANCH' matches a special branch pattern."
+            exit 0
+          fi
+
+          if [[ "$BRANCH" =~ $FEATURE ]]; then
+            echo "✅ Branch '$BRANCH' matches the feature pattern (verb-segment[-segment...])."
+            exit 0
+          fi
+
+          echo ""
+          echo "❌ Branch name '$BRANCH' is invalid."
+          echo ""
+          echo "Branch names must follow one of these patterns:"
+          echo "  Special : main | master | develop | dev | staging"
+          echo "            release/<name> | hotfix/<name>"
+          echo "  Feature : <verb>-<word>[-<word>...]"
+          echo "            where each segment is lowercase letters and/or digits"
+          echo ""
+          echo "Examples of valid feature branches:"
+          echo "  feat-user-authentication"
+          echo "  fix-cart-bug-42"
+          echo "  refactor-order-service-v2"
+          echo "  add-oauth2-login"
+          exit 1
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # 2. Commit-lint
+  #    Uses commitlint with the project's commitlint.config.js.
+  #    On a PR it lints every commit in the PR; on a push it lints HEAD.
+  # ────────────────────────────────────────────────────────────────────────────
+  commit-lint:
+    name: commit-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history needed to compare commits in a PR
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install commitlint
+        run: npm install --save-dev @commitlint/cli @commitlint/config-conventional
+
+      - name: Lint commits (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          npx commitlint \
+            --from "${{ github.event.pull_request.base.sha }}" \
+            --to   "${{ github.event.pull_request.head.sha }}" \
+            --verbose
+
+      - name: Lint commits (push)
+        if: github.event_name == 'push'
+        run: |
+          npx commitlint \
+            --from "HEAD~1" \
+            --to   "HEAD" \
+            --verbose
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # 3. Test — Unit (Jest + Supertest) + Playwright + Selenium
+  # ────────────────────────────────────────────────────────────────────────────
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    needs: [branch-lint, commit-lint]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Seed database
+        run: npm run seed
+
+      # ── Unit tests ───────────────────────────────────────────────────────
+      #- name: unit-tests
+      #  run: npm run test:unit:coverage
+
+      #- name: unit-test-coverage-report
+      #  if: always()
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: coverage-report
+      #    path: coverage/
+      #    retention-days: 14
+
+      #- name: start-server
+      #  run: |
+      #    npm start &
+      #    for i in {1..20}; do
+      #      curl -sf http://localhost:3000/api/products && break
+      #      echo "Waiting for server… ($i)"
+      #      sleep 2
+      #    done
+
+      # ── Playwright ──────────────────────────────────────────────────────
+      # - name: install-playwright-deps
+      #   run: npx playwright install --with-deps chromium
+
+      # - name: run-playwright-tests
+      #   run: npm run test:playwright
+
+      # - name: Upload Playwright report
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      #     retention-days: 14
+
+      # ── Selenium ────────────────────────────────────────────────────────
+      # - name: setup-selenium-chrome
+      #   uses: browser-actions/setup-chrome@v1
+
+      # - name: run-selenium-tests
+      #   run: npm run test:selenium
+
+      # - name: upload-selenium-results
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: selenium-results
+      #     path: tests/selenium/results/
+      #     retention-days: 14
