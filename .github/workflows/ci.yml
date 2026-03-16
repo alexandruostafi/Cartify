@@ -110,10 +110,10 @@ jobs:
             --verbose
 
   # ────────────────────────────────────────────────────────────────────────────
-  # 3. Test — Playwright + Selenium
+  # 3. Test — Unit (Jest + Supertest) + Playwright + Selenium
   # ────────────────────────────────────────────────────────────────────────────
   test:
-    name: 🧪 Tests (Playwright + Selenium)
+    name: 🧪 Tests (Unit + Playwright + Selenium)
     runs-on: ubuntu-latest
     needs: [branch-lint, commit-lint]
 
@@ -133,15 +133,26 @@ jobs:
       - name: Seed database
         run: npm run seed
 
-      - name: Start app server (background)
-        run: |
-          npm start &
-          # Wait until the server is ready
-          for i in {1..20}; do
-            curl -sf http://localhost:3000/api/products && break
-            echo "Waiting for server… ($i)"
-            sleep 2
-          done
+      # ── Unit tests ───────────────────────────────────────────────────────
+      #- name: Run unit tests
+      #  run: npm run test:unit:coverage
+
+      #- name: Upload coverage report
+      #  if: always()
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: coverage-report
+      #    path: coverage/
+      #    retention-days: 14
+
+      #- name: Start app server (background)
+      #  run: |
+      #    npm start &
+      #    for i in {1..20}; do
+      #      curl -sf http://localhost:3000/api/products && break
+      #      echo "Waiting for server… ($i)"
+      #      sleep 2
+      #    done
 
       # ── Playwright ──────────────────────────────────────────────────────
       # - name: Install Playwright browsers

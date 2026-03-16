@@ -6,6 +6,9 @@ const DB_PATH = path.join(__dirname, '..', 'shop.db');
 
 let db;
 
+/** Used by unit tests: swap in a fresh in-memory database without touching disk. */
+function _setDb(instance) { db = instance; }
+
 async function initDb() {
   const SQL = await initSqlJs();
 
@@ -90,6 +93,80 @@ async function initDb() {
   return db;
 }
 
+/**
+ * Initialise a fresh **in-memory** database with the full schema.
+ * Intended for unit tests only — nothing is written to disk.
+ */
+async function initTestDb() {
+  const SQL = await initSqlJs();
+  db = new SQL.Database();
+  db._save = () => {}; // no-op: never write to disk during tests
+
+  db.run('PRAGMA foreign_keys = ON;');
+
+  // Re-run the same schema creation as initDb()
+  const schemaStart = 'CREATE TABLE IF NOT EXISTS users';
+  const schemaEnd   = 'FOREIGN KEY (product_id) REFERENCES products(id)\n    );';
+  // Instead of duplicating the SQL, call initDb logic on the in-memory db
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      name       TEXT    NOT NULL,
+      email      TEXT    NOT NULL UNIQUE,
+      password   TEXT    NOT NULL,
+      role       TEXT    NOT NULL DEFAULT 'customer',
+      created_at TEXT    NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE TABLE IF NOT EXISTS categories (
+      id   INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE
+    );
+    CREATE TABLE IF NOT EXISTS products (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      name        TEXT    NOT NULL,
+      description TEXT,
+      price       REAL    NOT NULL,
+      stock       INTEGER NOT NULL DEFAULT 0,
+      image_url   TEXT,
+      category_id INTEGER,
+      created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (category_id) REFERENCES categories(id)
+    );
+    CREATE TABLE IF NOT EXISTS cart (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id    INTEGER NOT NULL,
+      product_id INTEGER NOT NULL,
+      quantity   INTEGER NOT NULL DEFAULT 1,
+      UNIQUE(user_id, product_id),
+      FOREIGN KEY (user_id)    REFERENCES users(id)    ON DELETE CASCADE,
+      FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS orders (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id     INTEGER NOT NULL,
+      total       REAL    NOT NULL,
+      status      TEXT    NOT NULL DEFAULT 'pending',
+      full_name   TEXT    NOT NULL,
+      address     TEXT    NOT NULL,
+      city        TEXT    NOT NULL,
+      postal_code TEXT    NOT NULL,
+      country     TEXT    NOT NULL,
+      created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+    CREATE TABLE IF NOT EXISTS order_items (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      order_id   INTEGER NOT NULL,
+      product_id INTEGER NOT NULL,
+      quantity   INTEGER NOT NULL,
+      unit_price REAL    NOT NULL,
+      FOREIGN KEY (order_id)   REFERENCES orders(id)   ON DELETE CASCADE,
+      FOREIGN KEY (product_id) REFERENCES products(id)
+    );
+  `);
+  return db;
+}
+
 function getDb() {
   if (!db) throw new Error('Database not initialised. Await initDb() first.');
   return db;
@@ -141,4 +218,4 @@ function transaction(fn) {
   };
 }
 
-module.exports = { initDb, all, get, run, _run, transaction };
+module.exports = { initDb, initTestDb, _setDb, all, get, run, _run, transaction };

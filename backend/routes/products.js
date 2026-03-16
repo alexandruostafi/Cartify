@@ -69,12 +69,20 @@ router.post('/', requireAdmin, (req, res) => {
 // PUT update product
 router.put('/:id', requireAdmin, (req, res) => {
   const { name, description, price, stock, image_url, category_id } = req.body;
-  const existing = get('SELECT id FROM products WHERE id = ?', [req.params.id]);
+  const existing = get('SELECT * FROM products WHERE id = ?', [req.params.id]);
   if (!existing) return res.status(404).json({ error: 'Product not found.' });
 
   run(
     'UPDATE products SET name=?, description=?, price=?, stock=?, image_url=?, category_id=? WHERE id=?',
-    [name, description, price, stock, image_url, category_id, req.params.id]
+    [
+      name        ?? existing.name,
+      description !== undefined ? description : (existing.description ?? ''),
+      price       ?? existing.price,
+      stock       !== undefined ? stock : (existing.stock ?? 0),
+      image_url   !== undefined ? image_url : (existing.image_url ?? ''),
+      category_id !== undefined ? category_id : existing.category_id,
+      req.params.id
+    ]
   );
 
   res.json({ message: 'Product updated.' });
