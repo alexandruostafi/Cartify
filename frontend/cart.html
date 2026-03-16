@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopApp – Cart</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="brand">🛍️ ShopApp</a>
+    <div class="nav-links">
+      <a href="index.html">Products</a>
+      <a href="cart.html" class="active">Cart <span class="cart-badge" id="cartCount">0</span></a>
+      <span id="authLinks">
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+      </span>
+      <span id="userLinks" style="display:none">
+        <a href="orders.html">My Orders</a>
+        <a href="#" id="adminLink" style="display:none">Admin</a>
+        <a href="#" id="logoutBtn">Logout</a>
+      </span>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2 class="page-title">Your Cart</h2>
+    <div id="cartContent">
+      <p class="loading">Loading cart…</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 ShopApp. All rights reserved.</p>
+  </footer>
+
+  <script src="js/auth-common.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopApp – Admin Panel</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="brand">🛍️ ShopApp</a>
+    <div class="nav-links">
+      <a href="index.html">Shop</a>
+      <a href="admin.html" class="active">Admin</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2 class="page-title">Admin Panel</h2>
+
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+      <button class="tab-btn" data-tab="products">Products</button>
+      <button class="tab-btn" data-tab="orders">Orders</button>
+      <button class="tab-btn" data-tab="users">Users</button>
+      <button class="tab-btn" data-tab="categories">Categories</button>
+    </div>
+
+    <!-- Dashboard Tab -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="stats-grid" id="statsGrid">
+        <p class="loading">Loading stats…</p>
+      </div>
+      <h3>Recent Orders</h3>
+      <div id="recentOrders"></div>
+    </div>
+
+    <!-- Products Tab -->
+    <div id="tab-products" class="tab-content">
+      <div class="section-header">
+        <h3>Products</h3>
+        <button class="btn btn-primary" id="addProductBtn">+ Add Product</button>
+      </div>
+
+      <!-- Product Form -->
+      <div id="productFormContainer" class="card" style="display:none">
+        <h4 id="productFormTitle">Add Product</h4>
+        <form id="productForm" class="form form-grid">
+          <input type="hidden" name="id" />
+          <label>Name <input type="text" name="name" required /></label>
+          <label>Price <input type="number" name="price" step="0.01" min="0" required /></label>
+          <label>Stock <input type="number" name="stock" min="0" required /></label>
+          <label>Category
+            <select name="category_id" id="productCategorySelect">
+              <option value="">— None —</option>
+            </select>
+          </label>
+          <label class="full-width">Image URL <input type="url" name="image_url" /></label>
+          <label class="full-width">Description <textarea name="description" rows="3"></textarea></label>
+          <div class="form-actions full-width">
+            <button type="submit" class="btn btn-primary" id="productSubmitBtn">Save</button>
+            <button type="button" class="btn btn-secondary" id="cancelProductBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="productsTable"></div>
+    </div>
+
+    <!-- Orders Tab -->
+    <div id="tab-orders" class="tab-content">
+      <h3>All Orders</h3>
+      <div id="adminOrdersTable"></div>
+    </div>
+
+    <!-- Users Tab -->
+    <div id="tab-users" class="tab-content">
+      <h3>Users</h3>
+      <div id="usersTable"></div>
+    </div>
+
+    <!-- Categories Tab -->
+    <div id="tab-categories" class="tab-content">
+      <div class="section-header">
+        <h3>Categories</h3>
+      </div>
+      <form id="categoryForm" class="form inline-form">
+        <input type="text" id="newCategoryName" placeholder="New category name" required />
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+      <div id="categoriesTable"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 ShopApp. All rights reserved.</p>
+  </footer>
+
+  <script src="js/auth-common.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

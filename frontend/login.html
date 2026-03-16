@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopApp – Login</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="brand">🛍️ ShopApp</a>
+    <div class="nav-links">
+      <a href="index.html">Products</a>
+      <a href="cart.html">Cart</a>
+    </div>
+  </nav>
+
+  <main class="container auth-container">
+    <div class="card auth-card">
+      <h2>Login</h2>
+      <form id="loginForm" class="form">
+        <label>Email
+          <input type="email" name="email" required placeholder="you@example.com" />
+        </label>
+        <label>Password
+          <input type="password" name="password" required placeholder="••••••••" />
+        </label>
+        <div id="loginError" class="error-msg"></div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+      </form>
+      <p class="auth-switch">Don't have an account? <a href="register.html">Register</a></p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 ShopApp. All rights reserved.</p>
+  </footer>
+
+  <script src="js/login.js"></script>
+</body>
+</html>
