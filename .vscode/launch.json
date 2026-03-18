@@ -51,6 +51,7 @@
       "runtimeArgs": ["--timeout", "40000"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
+      "preLaunchTask": "server: start + wait",
       "env": {
         "APP_URL": "http://localhost:3000"
       }
@@ -63,6 +64,7 @@
       "runtimeArgs": ["--spec", "${relativeFile}", "--timeout", "40000"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
+      "preLaunchTask": "server: start + wait",
       "env": {
         "APP_URL": "http://localhost:3000"
       }

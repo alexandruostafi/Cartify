@@ -63,6 +63,14 @@
       "problemMatcher": []
     },
     {
+      "label": "server: start + wait",
+      "type": "shell",
+      "command": "npx wait-on http://localhost:3000 --timeout 15000",
+      "dependsOn": "server: start",
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
       "label": "server: dev (nodemon)",
       "type": "shell",
       "command": "npm run dev",
