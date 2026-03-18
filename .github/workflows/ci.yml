@@ -171,7 +171,7 @@ jobs:
 
       # ── Selenium ────────────────────────────────────────────────────────
       - name: setup-selenium-chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v145
         id: setup-chrome
 
       - name: run-selenium-tests
