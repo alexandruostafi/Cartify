@@ -145,14 +145,14 @@ jobs:
       #    path: coverage/
       #    retention-days: 14
 
-      #- name: start-server
-      #  run: |
-      #    npm start &
-      #    for i in {1..20}; do
-      #      curl -sf http://localhost:3000/api/products && break
-      #      echo "Waiting for server… ($i)"
-      #      sleep 2
-      #    done
+      - name: start-server
+        run: |
+          npm start &
+          for i in {1..20}; do
+            curl -sf http://localhost:3000/api/products && break
+            echo "Waiting for server… ($i)"
+            sleep 2
+          done
 
       # ── Playwright ──────────────────────────────────────────────────────
       # - name: install-playwright-deps
