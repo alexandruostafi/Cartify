@@ -48,7 +48,7 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/mocha",
-      "runtimeArgs": ["tests/selenium/**/*.test.js", "--timeout", "40000"],
+      "runtimeArgs": ["--timeout", "40000"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "env": {
@@ -60,7 +60,7 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/mocha",
-      "runtimeArgs": ["${relativeFile}", "--timeout", "40000"],
+      "runtimeArgs": ["--spec", "${relativeFile}", "--timeout", "40000"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "env": {
