@@ -1,0 +1,92 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    // ── Unit tests ────────────────────────────────────────────────────────
+    {
+      "name": "Debug: Unit tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/jest",
+      "runtimeArgs": ["--selectProjects", "unit", "--runInBand", "--no-coverage"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Debug: Unit tests (current file)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/jest",
+      "runtimeArgs": ["--selectProjects", "unit", "--runInBand", "--no-coverage", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+
+    // ── Integration tests ─────────────────────────────────────────────────
+    {
+      "name": "Debug: Integration tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/jest",
+      "runtimeArgs": ["--selectProjects", "integration", "--runInBand", "--no-coverage"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Debug: Integration tests (current file)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/jest",
+      "runtimeArgs": ["--selectProjects", "integration", "--runInBand", "--no-coverage", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+
+    // ── Selenium tests ────────────────────────────────────────────────────
+    {
+      "name": "Debug: Selenium tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/mocha",
+      "runtimeArgs": ["tests/selenium/**/*.test.js", "--timeout", "40000"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "APP_URL": "http://localhost:3000"
+      }
+    },
+    {
+      "name": "Debug: Selenium tests (current file)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/mocha",
+      "runtimeArgs": ["${relativeFile}", "--timeout", "40000"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "APP_URL": "http://localhost:3000"
+      }
+    },
+
+    // ── Dev server ────────────────────────────────────────────────────────
+    {
+      "name": "Run: Dev server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/server.js",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "restart": true
+    }
+
+  ],
+
+  // ── Compound: start server then run Selenium ──────────────────────────────
+  "compounds": [
+    {
+      "name": "Run: Server + Selenium tests",
+      "configurations": ["Run: Dev server", "Debug: Selenium tests"],
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+
+    // ── Test suites ────────────────────────────────────────────────────────────
+    {
+      "label": "test: unit",
+      "type": "shell",
+      "command": "npm run test:unit",
+      "group": { "kind": "test", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "test: unit (coverage)",
+      "type": "shell",
+      "command": "npm run test:unit:coverage",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "test: integration",
+      "type": "shell",
+      "command": "npm run test:integration",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "test: selenium",
+      "type": "shell",
+      "command": "npm run test:selenium",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "test: playwright",
+      "type": "shell",
+      "command": "npm run test:playwright",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "test: all",
+      "type": "shell",
+      "command": "npm test",
+      "group": "test",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    },
+
+    // ── Server ─────────────────────────────────────────────────────────────────
+    {
+      "label": "server: start",
+      "type": "shell",
+      "command": "npm start",
+      "group": "build",
+      "isBackground": true,
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "server: dev (nodemon)",
+      "type": "shell",
+      "command": "npm run dev",
+      "group": "build",
+      "isBackground": true,
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+
+    // ── Seed ───────────────────────────────────────────────────────────────────
+    {
+      "label": "db: seed",
+      "type": "shell",
+      "command": "npm run seed",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    }
+
+  ]
+}
