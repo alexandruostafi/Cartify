@@ -1,4 +1,4 @@
-# 🛍️ BasicShopApp
+# 🛍️ Cartify
 
 A full-stack online shop web application built with **Node.js + Express** on the backend and **vanilla HTML/CSS/JS** on the frontend, using **SQLite** (via sql.js) as the database.
 
@@ -38,7 +38,7 @@ A full-stack online shop web application built with **Node.js + Express** on the
 ## Project Structure
 
 ```
-BasicShopApp/
+Cartify/
 ├── backend/
 │   ├── server.js          # Express entry point
 │   ├── db.js              # Database init & query helpers
