@@ -4,6 +4,16 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   const errorDiv = document.getElementById('loginError');
   errorDiv.textContent = '';
   const data = Object.fromEntries(new FormData(e.target));
+
+  if (!data.email || !data.email.trim()) {
+    errorDiv.textContent = 'Email is required.';
+    return;
+  }
+  if (!data.password) {
+    errorDiv.textContent = 'Password is required.';
+    return;
+  }
+
   const btn  = e.target.querySelector('button[type="submit"]');
   btn.disabled = true;
 
