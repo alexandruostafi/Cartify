@@ -125,7 +125,7 @@ describe('Authentication (Selenium)', function () {
     assert.ok(msg.length > 0, 'Expected and error for wrong password');
   });
 
-  it('customer login succeds and redirects to home', async () => {
+  it('customer login succeeds and redirects to home', async () => {
     await loginAs(driver, 'jane@example.com', 'customer123');
     const url = await driver.getCurrentUrl();
     assert.ok(url.endsWith('/') || url.includes('index.html'), `Unexpected URL: ${url}`);
