@@ -1,6 +1,6 @@
 {
   "name": "cartify",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Developed a full-stack e-commerce web application with automated UI test suite using Selenium (JavaScript) and regression scenarios for checkout, authentication, and cart workflows.",
   "main": "backend/server.js",
   "scripts": {
