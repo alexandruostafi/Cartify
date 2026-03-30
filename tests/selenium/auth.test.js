@@ -115,8 +115,8 @@ describe('Authentication (Selenium)', function () {
 
   it('login with wrong password shows error', async () => {
     await goto(driver, '/login.html');
-    await (await waitFor(driver, 'input[name=email]').sendKeys('jane@example.com'));
-    await (await waitFor(driver, 'input[name=password]').sendKeys('badpassword'));
+    await (await waitFor(driver, 'input[name=email]')).sendKeys('jane@example.com');
+    await (await waitFor(driver, 'input[name=password]')).sendKeys('badpassword');
     await (await waitFor(driver, 'button[type=submit]')).click();
 
     const errEl = await waitFor(driver, '#loginError');

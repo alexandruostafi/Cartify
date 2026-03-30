@@ -4,6 +4,23 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
   const errorDiv = document.getElementById('registerError');
   errorDiv.textContent = '';
   const data = Object.fromEntries(new FormData(e.target));
+
+  if (!data.name || !data.name.trim()) {
+    errorDiv.textContent = 'Name is required.';
+    return;
+  }
+  if (!data.email || !data.email.trim()) {
+    errorDiv.textContent = 'Email is required.';
+    return;
+  }
+  if (!data.password) {
+    errorDiv.textContent = 'Password is required.';
+    return;
+  }
+  if (data.password.length < 6) {
+    errorDiv.textContent = 'Password must be at least 6 characters.';
+    return;
+  }
   const btn  = e.target.querySelector('button[type="submit"]');
   btn.disabled = true;
 
