@@ -132,7 +132,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
+        run: npm install --save-dev mocha-junit-reporter mocha-multi-reporters
       - name: Seed database
         run: npm run seed
 
