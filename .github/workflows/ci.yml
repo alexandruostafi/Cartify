@@ -131,8 +131,8 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm c
-        
+        run: npm ci
+
       - name: Seed database
         run: npm run seed
 
