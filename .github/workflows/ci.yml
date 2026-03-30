@@ -193,11 +193,4 @@ jobs:
           path: tests/selenium/results/results.xml
           reporter: java-junit
           fail-on-error: false
-
-      - name: upload-selenium-results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: selenium-results
-          path: tests/selenium/results/
-          retention-days: 14
+          artifact: selenium-results
