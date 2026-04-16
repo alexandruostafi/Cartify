@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "orta.vscode-jest",
+    "coderline.mocha-vscode",
+    "ms-playwright.playwright",
+    "dbaeumer.vscode-eslint",
+    "humao.rest-client",
+    "mikestead.dotenv",
+    "esbenp.prettier-vscode"
+  ]
+}
