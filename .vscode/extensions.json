@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "orta.vscode-jest",
+    "firsttris.vscode-jest-runner",
     "coderline.mocha-vscode",
     "ms-playwright.playwright",
     "dbaeumer.vscode-eslint",
