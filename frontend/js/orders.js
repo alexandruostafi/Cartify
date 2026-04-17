@@ -12,7 +12,7 @@ function badgeClass(status) {
 async function loadOrders() {
   const res = await fetch('/api/orders/my', { credentials: 'include' });
   if (res.status === 401) {
-    container.innerHTML = `<p>Please <a href="login.html">log in</a> to see your orders.</p>`;
+    container.innerHTML = `<p>Please <a href="login.html">log in</a> to see your requisitions.</p>`;
     return;
   }
   const orders = await res.json();
@@ -22,14 +22,14 @@ async function loadOrders() {
   const orderId = params.get('success');
   let banner = '';
   if (orderId) {
-    banner = `<div class="card" style="background:#dcfce7;border-color:#86efac;margin-bottom:20px">
-      ✅ <strong>Order #${orderId} placed successfully!</strong> Thank you for your purchase.
+    banner = `<div class="card" style="background:#1a2e1a;border-color:#22c55e;margin-bottom:20px;color:#4ade80">
+      ⚔️ <strong>Requisition #${orderId} confirmed!</strong> The Emperor protects. Your miniatures are being prepared.
     </div>`;
     history.replaceState(null, '', 'orders.html');
   }
 
   if (orders.length === 0) {
-    container.innerHTML = banner + `<p class="no-items">You have no orders yet. <a href="index.html">Start shopping →</a></p>`;
+    container.innerHTML = banner + `<p class="no-items">No requisitions yet. <a href="index.html">Browse the armoury →</a></p>`;
     return;
   }
 

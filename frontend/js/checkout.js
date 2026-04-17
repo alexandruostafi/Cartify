@@ -16,7 +16,7 @@ async function loadSummary() {
   }
   const items = await res.json();
   if (items.length === 0) {
-    summaryItems.innerHTML = '<p class="no-items">Your cart is empty.</p>';
+    summaryItems.innerHTML = '<p class="no-items">Your armoury is empty.</p>';
     form.querySelector('button[type="submit"]').disabled = true;
     return;
   }
@@ -37,7 +37,7 @@ form.addEventListener('submit', async (e) => {
   const data = Object.fromEntries(new FormData(form));
   const btn  = form.querySelector('button[type="submit"]');
   btn.disabled = true;
-  btn.textContent = 'Placing order…';
+  btn.textContent = 'Deploying requisition…';
 
   try {
     const res  = await fetch('/api/orders', {
@@ -51,7 +51,7 @@ form.addEventListener('submit', async (e) => {
     if (!res.ok) {
       errorDiv.textContent = resp.error || 'Order failed.';
       btn.disabled = false;
-      btn.textContent = 'Place Order';
+      btn.textContent = 'Confirm Requisition';
       return;
     }
 

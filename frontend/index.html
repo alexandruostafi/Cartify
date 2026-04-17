@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ShopApp – Home</title>
+  <title>WarForge – Warhammer 40K Miniatures</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
-    <a href="index.html" class="brand">🛍️ ShopApp</a>
+    <a href="index.html" class="brand">⚔️ WarForge</a>
     <div class="nav-links">
-      <a href="index.html" class="active">Products</a>
+      <a href="index.html" class="active">Miniatures</a>
       <a href="cart.html">Cart <span class="cart-badge" id="cartCount">0</span></a>
       <span id="authLinks">
         <a href="login.html">Login</a>
@@ -28,29 +28,29 @@
   <!-- Hero Banner -->
   <header class="hero">
     <div class="hero-content">
-      <h1>Welcome to ShopApp</h1>
-      <p>Discover amazing products at great prices.</p>
+      <h1>Welcome to WarForge</h1>
+      <p>In the grim darkness of the far future, there is only war — and miniatures to paint.</p>
     </div>
   </header>
 
   <!-- Filters -->
   <main class="container">
     <div class="filters">
-      <input type="text" id="searchInput" placeholder="Search products…" />
+      <input type="text" id="searchInput" placeholder="Search miniatures…" />
       <select id="categoryFilter">
-        <option value="">All Categories</option>
+        <option value="">All Factions</option>
       </select>
       <button id="searchBtn" class="btn btn-primary">Search</button>
     </div>
 
     <!-- Products Grid -->
     <div class="products-grid" id="productsGrid">
-      <p class="loading">Loading products…</p>
+      <p class="loading">Summoning miniatures from the Warp…</p>
     </div>
   </main>
 
   <footer class="footer">
-    <p>&copy; 2026 ShopApp. All rights reserved.</p>
+    <p>&copy; 2026 WarForge. In the Emperor's name.</p>
   </footer>
 
   <script src="js/auth-common.js"></script>
