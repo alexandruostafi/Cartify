@@ -6,7 +6,7 @@ function escHtml(str) {
 }
 
 async function loadCart() {
-  cartContent.innerHTML = '<p class="loading">Loading cart…</p>';
+  cartContent.innerHTML = '<p class="loading">Inspecting armoury…</p>';
 
   const res = await fetch('/api/cart', { credentials: 'include' });
   if (res.status === 401) {
@@ -21,7 +21,7 @@ async function loadCart() {
   if (items.length === 0) {
     cartContent.innerHTML = `
       <div class="cart-empty">
-        <p>Your cart is empty. <a href="index.html">Continue shopping →</a></p>
+        <p>Your armoury is empty. <a href="index.html">Browse miniatures →</a></p>
       </div>`;
     return;
   }
@@ -88,7 +88,7 @@ async function removeItem(productId) {
 }
 
 async function clearCart() {
-  if (!confirm('Clear your entire cart?')) return;
+  if (!confirm('Purge your entire armoury?')) return;
   await fetch('/api/cart', { method: 'DELETE', credentials: 'include' });
   loadCart();
   updateCartBadge();

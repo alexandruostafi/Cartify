@@ -32,7 +32,7 @@ describe('Authentication (Selenium)', function () {
     await goto(driver, '/register.html');
     await waitFor(driver, '#registerForm');
     const heading = await driver.findElement(By.css('h2'));
-    assert.ok((await heading.getText()).includes('Create Account'));
+    assert.ok((await heading.getText()).includes('Enlist, Battle-Brother'));
   });
 
   it('successful registration redirects to home', async () => {
@@ -54,13 +54,13 @@ describe('Authentication (Selenium)', function () {
       await goto(driver, '/register.html');
       await waitFor(driver, '#registerForm');
       const heading = await driver.findElement(By.css('h2'));
-      assert.ok((await heading.getText()).includes('Create Account'));
+      assert.ok((await heading.getText()).includes('Enlist, Battle-Brother'));
     });
 
     it('duplicate email registration shows an error message', async () => {
       await goto(driver, '/register.html');
       await (await waitFor(driver, 'input[name="name"]')).sendKeys('Dup');
-      await driver.findElement(By.css('input[name="email"]')).sendKeys('jane@example.com');
+      await driver.findElement(By.css('input[name="email"]')).sendKeys('cassius@example.com');
       await driver.findElement(By.css('input[name="password"]')).sendKeys('whatever123');
       await driver.findElement(By.css('button[type="submit"]')).click();
 
@@ -119,7 +119,7 @@ describe('Authentication (Selenium)', function () {
 
   it('login with wrong password shows error', async () => {
     await goto(driver, '/login.html');
-    await (await waitFor(driver, 'input[name=email]')).sendKeys('jane@example.com');
+    await (await waitFor(driver, 'input[name=email]')).sendKeys('cassius@example.com');
     await (await waitFor(driver, 'input[name=password]')).sendKeys('badpassword');
     await (await waitFor(driver, 'button[type=submit]')).click();
 
@@ -130,20 +130,20 @@ describe('Authentication (Selenium)', function () {
   });
 
   it('customer login succeeds and redirects to home', async () => {
-    await loginAs(driver, 'jane@example.com', 'customer123');
+    await loginAs(driver, 'cassius@example.com', 'customer123');
     const url = await driver.getCurrentUrl();
     assert.ok(url.endsWith('/') || url.includes('index.html'), `Unexpected URL: ${url}`);
   });
 
   it('admin login redirects to admin panel', async () => {
-    await loginAs(driver, 'admin@shop.com', 'admin123');
+    await loginAs(driver, 'admin@warforge.com', 'admin123');
     const url = await driver.getCurrentUrl();
     assert.ok(url.includes('admin.html'), `Expected admin.html, got: ${url}`);
   });
 
   it('customer login with empty password shows error', async () => {
     await goto(driver, '/login.html');
-    await (await waitFor(driver, 'input[name=email]')).sendKeys('jane@example.com');
+    await (await waitFor(driver, 'input[name=email]')).sendKeys('cassius@example.com');
     await (await waitFor(driver, 'input[name=password]')).sendKeys('');
     await (await waitFor(driver, 'button[type=submit]')).click();
 

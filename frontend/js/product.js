@@ -8,14 +8,14 @@ function escHtml(str) {
 }
 
 async function loadProduct() {
-  if (!id) { container.innerHTML = '<p class="error-msg">No product specified.</p>'; return; }
+  if (!id) { container.innerHTML = '<p class="error-msg">No miniature specified.</p>'; return; }
 
   try {
     const res = await fetch(`/api/products/${id}`, { credentials: 'include' });
-    if (!res.ok) { container.innerHTML = '<p class="error-msg">Product not found.</p>'; return; }
+    if (!res.ok) { container.innerHTML = '<p class="error-msg">Miniature not found.</p>'; return; }
 
     const p = await res.json();
-    document.title = `ShopApp – ${p.name}`;
+    document.title = `WarForge – ${p.name}`;
 
     container.innerHTML = `
       <a href="index.html" class="back-link">← Back to Products</a>
@@ -26,7 +26,7 @@ async function loadProduct() {
           ${p.category_name ? `<span class="category-tag">${escHtml(p.category_name)}</span>` : ''}
           <h1>${escHtml(p.name)}</h1>
           <p class="price">$${p.price.toFixed(2)}</p>
-          <p class="description">${escHtml(p.description || 'No description available.')}</p>
+          <p class="description">${escHtml(p.description || 'No description available from the Adeptus Administratum.')}</p>
           <p class="stock-info">
             ${p.stock > 0
               ? `✅ ${p.stock} units available`
@@ -37,7 +37,7 @@ async function loadProduct() {
             <label for="qty"><strong>Quantity:</strong></label>
             <input type="number" id="qty" value="1" min="1" max="${p.stock}" />
           </div>
-          <button class="btn btn-primary" id="addToCartBtn">Add to Cart 🛒</button>
+          <button class="btn btn-primary" id="addToCartBtn">Requisition ⚔️</button>
           ` : ''}
           <div id="cartMsg" class="error-msg"></div>
         </div>
@@ -67,12 +67,12 @@ async function loadProduct() {
         }
         updateCartBadge();
         document.getElementById('cartMsg').style.color = 'var(--success)';
-        document.getElementById('cartMsg').textContent = '✅ Added to cart!';
+        document.getElementById('cartMsg').textContent = '⚔️ Added to armoury!';
         setTimeout(() => document.getElementById('cartMsg').textContent = '', 3000);
       });
     }
   } catch (_) {
-    container.innerHTML = '<p class="error-msg">Failed to load product.</p>';
+    container.innerHTML = '<p class="error-msg">Failed to load miniature.</p>';
   }
 }
 

@@ -42,7 +42,7 @@ app.get('*', (req, res) => {
 // ── Start ─────────────────────────────────────────────────────────────────────
 initDb().then(() => {
   app.listen(PORT, () => {
-    console.log(`\n🛍️  Basic Shop App running at http://localhost:${PORT}\n`);
+    console.log(`\n⚔️  WarForge running at http://localhost:${PORT}\n`);
   });
 }).catch(err => {
   console.error('Failed to initialise database:', err);

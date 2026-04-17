@@ -5,8 +5,27 @@ async function seed() {
   await initDb();
   console.log('🌱 Seeding database...');
 
-  // Categories
-  const categories = ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports'];
+  // Clear existing data to avoid duplicates on re-seed
+  run('DELETE FROM order_items');
+  run('DELETE FROM orders');
+  run('DELETE FROM cart');
+  run('DELETE FROM products');
+  run('DELETE FROM categories');
+  run('DELETE FROM users');
+
+  // Categories – Warhammer 40K factions & product types
+  const categories = [
+    'Space Marines',
+    'Chaos Space Marines',
+    'Aeldari',
+    'Orks',
+    'Necrons',
+    'Tyranids',
+    'T\'au Empire',
+    'Adeptus Mechanicus',
+    'Paints & Tools',
+    'Terrain & Scenery'
+  ];
   for (const name of categories) {
     try { run('INSERT INTO categories (name) VALUES (?)', [name]); } catch (_) {}
   }
@@ -16,86 +35,121 @@ async function seed() {
   // Admin user
   const adminPwd = await bcrypt.hash('admin123', 10);
   try {
-    run("INSERT INTO users (name, email, password, role) VALUES ('Admin', 'admin@shop.com', ?, 'admin')", [adminPwd]);
+    run("INSERT INTO users (name, email, password, role) VALUES ('Fabricator General', 'admin@warforge.com', ?, 'admin')", [adminPwd]);
   } catch (_) {}
 
   // Sample customer
   const customerPwd = await bcrypt.hash('customer123', 10);
   try {
-    run("INSERT INTO users (name, email, password, role) VALUES ('Jane Doe', 'jane@example.com', ?, 'customer')", [customerPwd]);
+    run("INSERT INTO users (name, email, password, role) VALUES ('Brother Cassius', 'cassius@example.com', ?, 'customer')", [customerPwd]);
   } catch (_) {}
 
-  // Products
+  // Products – Warhammer 40K miniatures
   const products = [
     {
-      name: 'Wireless Headphones',
-      description: 'High-quality noise-cancelling over-ear headphones with 30h battery life.',
-      price: 89.99, stock: 50,
-      image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
-      category: 'Electronics'
+      name: 'Primaris Intercessors Squad',
+      description: 'A box of 10 multipart plastic Primaris Intercessors. Armed with bolt rifles, they form the core battleline of any Space Marine army. Includes multiple weapon and head options.',
+      price: 52.00, stock: 40,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120101309_SMPrimarisIntercessorsStock.jpg?fm=webp&w=892&h=920',
+      category: 'Space Marines'
     },
     {
-      name: 'Mechanical Keyboard',
-      description: 'Compact TKL mechanical keyboard with RGB backlight and blue switches.',
-      price: 74.99, stock: 30,
-      image_url: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400',
-      category: 'Electronics'
+      name: 'Ultramarines Captain in Gravis Armour',
+      description: 'A finely detailed single-model kit of a Space Marine Captain clad in heavy Gravis armour. Comes with a master-crafted power sword and boltstorm gauntlet. Ideal centrepiece HQ choice.',
+      price: 35.00, stock: 25,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99070101077_SMCPTGravisArmourStock.jpg?fm=webp&w=892&h=920',
+      category: 'Space Marines'
     },
     {
-      name: 'Smartphone Stand',
-      description: 'Adjustable aluminium desk stand compatible with all smartphones and tablets.',
-      price: 19.99, stock: 100,
-      image_url: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400',
-      category: 'Electronics'
+      name: 'Redemptor Dreadnought',
+      description: 'A towering Primaris Dreadnought armed with a macro plasma incinerator or heavy onslaught gatling cannon. Highly poseable multipart plastic kit with incredible detail.',
+      price: 65.00, stock: 18,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120101310_SMPrimarisRedemptorDreadnoughtStock.jpg?fm=webp&w=892&h=920',
+      category: 'Space Marines'
     },
     {
-      name: 'Classic White T-Shirt',
-      description: '100% organic cotton crew-neck t-shirt. Available in sizes S-XXL.',
-      price: 14.99, stock: 200,
-      image_url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
-      category: 'Clothing'
+      name: 'Chaos Terminators',
+      description: 'Box of 5 Chaos Terminators in baroque, corrupted power armour. Loaded with weapon options including combi-bolters, power fists, chain axes, and a reaper autocannon.',
+      price: 48.00, stock: 30,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120102171_CSMTerminatorSquadStock.jpg?fm=webp&w=1200&h=1237',
+      category: 'Chaos Space Marines'
     },
     {
-      name: 'Denim Jacket',
-      description: 'Slim-fit denim jacket, timeless style for any occasion.',
-      price: 49.99, stock: 75,
-      image_url: 'https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=400',
-      category: 'Clothing'
+      name: 'Abaddon the Despoiler',
+      description: 'The Warmaster of Chaos in all his dark glory. This stunning centrepiece model towers over other infantry. Armed with the daemon sword Drach\'nyen and the Talon of Horus.',
+      price: 55.00, stock: 12,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120102175_AbaddonDespoilerUpdateStock.jpg?fm=webp&w=892&h=920',
+      category: 'Chaos Space Marines'
     },
     {
-      name: 'The Pragmatic Programmer',
-      description: 'A classic guide to software craftsmanship by David Thomas and Andrew Hunt.',
-      price: 34.99, stock: 60,
-      image_url: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400',
-      category: 'Books'
+      name: 'Wraithguard',
+      description: 'Box of 5 Aeldari Wraithguard, towering ghost warriors that can be built with devastating wraithcannons or D-scythes. Elegant and deadly multipart plastic kit.',
+      price: 42.50, stock: 22,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120104083_WaithguardStock.jpg?fm=webp&w=892&h=920',
+      category: 'Aeldari'
     },
     {
-      name: 'Clean Code',
-      description: 'A handbook of agile software craftsmanship by Robert C. Martin.',
-      price: 29.99, stock: 45,
-      image_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400',
-      category: 'Books'
+      name: 'Ork Boyz Mob',
+      description: 'A rowdy mob of 20 Ork Boyz ready for a proper WAAAGH! Includes choppas, sluggas, shootas, and options for a Nob leader with power klaw. The backbone of any Ork horde.',
+      price: 40.00, stock: 50,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99122709002_OGTOrcBoyzMob06.jpg?fm=webp&w=892&h=920',
+      category: 'Orks'
     },
     {
-      name: 'Ceramic Plant Pot',
-      description: 'Elegant minimalist ceramic pot for indoor plants. 15cm diameter.',
-      price: 12.99, stock: 150,
-      image_url: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400',
-      category: 'Home & Garden'
+      name: 'Necron Warriors + Scarabs',
+      description: 'Box of 10 Necron Warriors armed with gauss flayers or gauss reapers. The relentless core of any Necron dynasty.',
+      price: 38.00, stock: 35,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120110052_NecronWarriorsStock.jpg?fm=webp&w=892&h=920',
+      category: 'Necrons'
     },
     {
-      name: 'Yoga Mat',
-      description: 'Non-slip 6mm thick eco-friendly yoga mat with carrying strap.',
-      price: 27.99, stock: 80,
-      image_url: 'https://images.unsplash.com/photo-1601925228604-6b60b3e8be67?w=400',
-      category: 'Sports'
+      name: 'Tyranid Hive Tyrant',
+      description: 'A monstrous synapse creature that can be built as a walking Hive Tyrant or a winged Flyrant. Includes heavy venom cannon, stranglethorn cannon, and monstrous bonesword options.',
+      price: 55.00, stock: 15,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120106060_HiveTyrantStock.jpg?fm=webp&w=892&h=920',
+      category: 'Tyranids'
     },
     {
-      name: 'Water Bottle 1L',
-      description: 'Insulated stainless steel water bottle, keeps drinks cold 24h or hot 12h.',
-      price: 22.99, stock: 120,
-      image_url: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400',
-      category: 'Sports'
+      name: 'T\'au Crisis Battlesuit Team',
+      description: 'Box of 3 XV8 Crisis Battlesuits with a huge range of weapon systems including burst cannons, plasma rifles, fusion blasters, missile pods, and shield generators.',
+      price: 60.00, stock: 20,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120113072_TAUCrisisBattlesuitStock.jpg?fm=webp&w=892&h=920',
+      category: 'T\'au Empire'
+    },
+    {
+      name: 'Skitarii Rangers',
+      description: 'Skitarii Rangers, featuring cowls and gasmasks, stalk their prey with galvanic rifles. Each trooper is sealed in heavy, industrialised Skitarii warplate, emblazoned with the symbol of the Adeptus Mechanicus, bristling with data-collecting sensors, antennae and environmental monitors.',
+      price: 40.00, stock: 28,
+      image_url: 'https://m.media-amazon.com/images/I/61RLIOCU-vL._AC_SX679_.jpg',
+      category: 'Adeptus Mechanicus'
+    },
+    {
+      name: 'Warhammer 40,000: Paints + Tools Set',
+      description: 'You’ll find 13 different Citadel Colour paints in 12ml pots, featuring the essential colours needed to paint your first models – they\'re particularly suited to Space Marines of the Ultramarines Chapter and Tyranids of Hive Fleet Leviathan.',
+      price: 33.50, stock: 60,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/52170199001_WH40KPaintAndToolSet07.jpg?fm=webp&w=892&h=920',
+      category: 'Paints & Tools'
+    },
+    {
+      name: 'Citadel Mouldline Remover',
+      description: 'A precision tool designed to cleanly remove mouldlines from plastic, resin, and metal miniatures without damaging fine detail. An essential hobby tool.',
+      price: 18.00, stock: 75,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99239999116_MouldlineRemoverStock.jpg?fm=webp&w=892&h=920',
+      category: 'Paints & Tools'
+    },
+    {
+      name: 'Aegis Defence Line',
+      description: 'A modular fortification terrain kit featuring barricade walls and a quad-gun emplacement. Gives your battlefield an Imperial strongpoint. Compatible with standard 28mm bases.',
+      price: 32.50, stock: 20,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120105108_AMAegisDefencelineStock.jpg?fm=webp&w=892&h=920',
+      category: 'Terrain & Scenery'
+    },
+    {
+      name: 'Battlezone: Fronteris — Vox-Antenna & Auspex Shrine',
+      description: 'Build an immersive battlefield and wage war on a hotly contested frontier world with terrain pieces representing rugged Imperial structures – such as a Vox-Antenna and Auspex Shrine.',
+      price: 95.00, stock: 10,
+      image_url: 'https://www.warhammer.com/app/resources/catalog/product/920x950/99120199095_BZFVoxAntennaandAuspexShrineStock.jpg?fm=webp&w=892&h=920',
+      category: 'Terrain & Scenery'
     },
   ];
 
@@ -113,8 +167,8 @@ async function seed() {
   }
 
   console.log('✅ Seeding complete!');
-  console.log('   Admin login  → admin@shop.com   / admin123');
-  console.log('   Customer     → jane@example.com / customer123');
+  console.log('   Admin login  → admin@warforge.com / admin123');
+  console.log('   Customer     → cassius@example.com / customer123');
 }
 
 seed().catch(console.error);

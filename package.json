@@ -1,7 +1,7 @@
 {
-  "name": "cartify",
+  "name": "warforge",
   "version": "1.2.1",
-  "description": "Developed a full-stack e-commerce web application with automated UI test suite using Selenium (JavaScript) and regression scenarios for checkout, authentication, and cart workflows.",
+  "description": "A full-stack Warhammer 40K miniatures web shop with Node.js + Express backend, vanilla HTML/CSS/JS frontend, SQLite database, and automated UI tests with Selenium and Playwright.",
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",

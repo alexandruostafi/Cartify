@@ -1,23 +1,23 @@
-# 🛍️ Cartify
+# ⚔️ WarForge
 
-A full-stack online shop web application built with **Node.js + Express** on the backend and **vanilla HTML/CSS/JS** on the frontend, using **SQLite** (via sql.js) as the database.
+A full-stack online shop web application for **Warhammer 40K miniatures**, built with **Node.js + Express** on the backend and **vanilla HTML/CSS/JS** on the frontend, using **SQLite** (via sql.js) as the database. Features a dark, grimdark theme fitting the 41st Millennium.
 
 ---
 
 ## Features
 
-- **Product listing** with search and category filtering
-- **Product detail** page
+- **Miniature catalogue** with search and faction filtering
+- **Miniature detail** page
 - **Shopping cart** (add, update quantity, remove, clear)
 - **Checkout** with shipping details and atomic order placement
-- **Order history** for logged-in customers
+- **Order history** ("Requisitions") for logged-in customers
 - **User authentication** (register, login, logout, session-based)
-- **Admin panel** with:
+- **Command Centre** (admin panel) with:
   - Dashboard (stats + recent orders)
-  - Product management (create, edit, delete)
+  - Product management (create, edit, delete miniatures)
   - Order management (view all orders, update status)
   - User management (view users, promote/demote to admin)
-  - Category management (create, delete)
+  - Faction management (create, delete factions)
 
 ---
 
@@ -119,7 +119,7 @@ npm install
 
 ### 2. Seed the database
 
-Populates the database with sample categories, products, an admin account, and a demo customer account.
+Populates the database with sample factions (Space Marines, Chaos, Aeldari, Orks, Necrons, etc.), Warhammer 40K miniature products, an admin account, and a demo customer account.
 
 ```bash
 npm run seed
@@ -147,8 +147,8 @@ npm run dev
 
 | Role     | Email                  | Password      |
 |----------|------------------------|---------------|
-| Admin    | `admin@shop.com`       | `admin123`    |
-| Customer | `jane@example.com`     | `customer123` |
+| Admin    | `admin@warforge.com`   | `admin123`    |
+| Customer | `cassius@example.com`  | `customer123` |
 
 > ⚠️ Change these credentials before deploying to production.
 

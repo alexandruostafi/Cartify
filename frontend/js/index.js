@@ -18,7 +18,7 @@ async function loadCategories() {
 }
 
 async function loadProducts() {
-  grid.innerHTML = '<p class="loading">Loading products…</p>';
+  grid.innerHTML = '<p class="loading">Summoning miniatures from the Warp…</p>';
   const params = new URLSearchParams();
   if (searchIn.value.trim())  params.set('search',   searchIn.value.trim());
   if (catFilter.value)        params.set('category', catFilter.value);
@@ -28,7 +28,7 @@ async function loadProducts() {
     const products = await res.json();
 
     if (products.length === 0) {
-      grid.innerHTML = '<p class="no-items">No products found.</p>';
+      grid.innerHTML = '<p class="no-items">No miniatures found. The search yielded nothing, Commander.</p>';
       return;
     }
 
@@ -53,7 +53,7 @@ async function loadProducts() {
       </div>
     `).join('');
   } catch (err) {
-    grid.innerHTML = '<p class="error-msg">Failed to load products.</p>';
+      grid.innerHTML = '<p class="error-msg">Failed to load miniatures.</p>';
   }
 }
 
@@ -72,7 +72,7 @@ async function addToCart(productId) {
       return;
     }
     updateCartBadge();
-    showToast('Added to cart! 🛒');
+    showToast('Requisitioned! ⚔️');
   } catch (_) { alert('Network error.'); }
 }
 
@@ -83,7 +83,7 @@ function showToast(msg) {
     toast.id = 'toast';
     Object.assign(toast.style, {
       position: 'fixed', bottom: '24px', right: '24px',
-      background: '#1e293b', color: '#fff', padding: '12px 20px',
+      background: '#1a1a1a', color: '#e4e4e7', padding: '12px 20px',
       borderRadius: '8px', fontSize: '.9rem', boxShadow: '0 4px 12px rgba(0,0,0,.3)',
       zIndex: 9999, transition: 'opacity .3s'
     });
